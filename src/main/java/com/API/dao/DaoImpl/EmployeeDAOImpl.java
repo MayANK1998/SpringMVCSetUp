@@ -25,6 +25,18 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		}
 		return null;
 	}
+
+	public boolean insertEmployee(final EmployeeVO employeeVO) {
+		try{
+			Statement stmt = createConnection();
+			stmt.executeQuery("insert into emp (fistName , surname) value ("+employeeVO.getFirstName()+
+					","+employeeVO.getLastName()+")");
+			return true;
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return false;
+	}
 	public List<EmployeeVO> getAllEmployees() {
 		List<EmployeeVO> employeeVOList = new ArrayList<EmployeeVO>();
 		try {

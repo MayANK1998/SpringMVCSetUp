@@ -25,17 +25,46 @@
 <body>
 <a href="#data" class="btn btn-info" data-toggle="collapse" onclick="putEmployeeData()">Simple collapsible</a>
 <div id="data" class="collapse"></div>
-<a href="#employeedetails" class="btn btn-info" data-toggle="collapse" >Get Employee detail</a>
-<div id="employeedetails" class="collapse">
+<a href="#employeedetailsform" class="btn btn-info" data-toggle="collapse" >Get Employee detail</a>
+<div id="employeedetailsform" class="collapse">
     <p>put employee id</p>
-    <input type="number" name="empid" ><br>
+    <input type="number" id="empid" ><br>
     <input type="submit" value="Submit" onclick="getEmployeeDetail()">
 
 
 </div>
+<div id="employeedetails">
+</div>
 <div id="data1" class="collapse"></div>
 </body>
 <script>
+
+    function create_show(data,divloc) {
+        var col = [];
+        var table = document.createElement("table");
+        for (var key in data) {
+            if (col.indexOf(key) === -1) {
+                col.push(key);
+            }
+        }
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      // TABLE HEADER.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+        tr = table.insertRow(-1);
+
+        for (var j = 0; j < col.length; j++) {
+            var tabCell = tr.insertCell(-1);
+            tabCell.innerHTML = data[col[j]];
+        }
+
+        var divContainer = document.getElementById(divloc);
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+    }
     function createTable(data, divloc) {
         var col = [];
         for (var i = 0; i < data.length; i++) {
@@ -90,16 +119,14 @@
     }
     function getEmployeeDetail() {
 
-        var empid = document.getElementsByName("empid");
-        empid=1;
-        fetch("http://localhost:9080/springmvcexample_war_exploded/employee-module/getEmployees?empid="+empid.toString()).then(function (response) {
+        var empid = document.getElementById("empid").value;
 
-            console.log("ffd","http://localhost:9080/springmvcexample_war_exploded/employee-module/getAllEmployees?empid="+empid);
+        fetch("http://localhost:9080/springmvcexample_war_exploded/employee-module/getEmployees?empid="+empid).then(function (response) {
             return response.json();
 
         }).then(function (data) {
-
-            document.getElementById("employeedetails").innerText=JSON.stringify(data);
+            create_show(data,"employeedetails")
+            //document.getElementById("employeedetails").innerText=JSON.stringify(data);
 
         }).catch(function () {
             console.log("Booo");
